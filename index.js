@@ -45,9 +45,12 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/upload", uploadRoutes);
-app.get("/", (req, res) => {
-  res.send("This works!!");
+app.get("/", (request, response) => {
+  response.json({
+    message: "Blog Server up",
+  });
 })
+
 // Error handling middleware
 app.use(errorHandler);
 

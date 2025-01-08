@@ -14,8 +14,7 @@ const getPosts = asyncHandler(async (req, res) => {
 // @desc    Create a new post
 // @route   POST /api/posts
 // @access  Private
-// Create a new post
-// Create a new post
+
 const createPost = asyncHandler(async (req, res) => {
   const { title, content, image } = req.body;
 

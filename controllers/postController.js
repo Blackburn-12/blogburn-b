@@ -22,27 +22,37 @@ const createPost = asyncHandler(async (req, res) => {
   let imageUrl =
     "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg";
 
-  // Check if an image URL is provided in the request body
-  if (image) {
-    imageUrl = image;
-  }
-  // If an image file is provided, upload it to Cloudinary
-  else if (req.file) {
-    const result = await cloudinary.uploader.upload(req.file.path);
-    // Clean up: remove file from local storage after upload to cloudinary
-    fs.unlinkSync(req.file.path);
-    imageUrl = result.secure_url;
-  }
+  try {
+    // Check if an image URL is provided in the request body
+    if (image) {
+      imageUrl = image;
+    }
+    // If an image file is provided, upload it to Cloudinary
+    else if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      // Clean up: remove file from local storage after upload to cloudinary
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+      imageUrl = result.secure_url;
+    }
 
-  const post = new Post({
-    user: req.user._id,
-    title,
-    content,
-    image: imageUrl,
-  });
+    const post = new Post({
+      user: req.user._id,
+      title,
+      content,
+      image: imageUrl,
+    });
 
-  const createdPost = await post.save();
-  res.status(201).json(createdPost);
+    const createdPost = await post.save();
+    res.status(201).json(createdPost);
+  } catch (error) {
+    // Clean up on error if file exists
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    throw error; // Let the asyncHandler handle the error
+  }
 });
 
 // @desc    Get a post by ID

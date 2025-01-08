@@ -23,7 +23,7 @@ router.post('/', multer.single('image'), async (req, res) => {
     });
   } catch (error) {
     // Clean up on error if file exists
-    if (req.file && req.file.path) {
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
       fs.unlinkSync(req.file.path);
     }
     res.status(500).json({ message: 'Failed to upload image', error: error.message });

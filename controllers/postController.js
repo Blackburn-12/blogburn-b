@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Post from "../models/Post.js";
 import upload from '../config/multerConfig.js';
+import cloudinary from "../config/cloudinaryConfig.js";
 
 // @desc    Get all posts
 // @route   GET /api/posts

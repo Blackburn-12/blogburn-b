@@ -15,6 +15,7 @@ const getPosts = asyncHandler(async (req, res) => {
 // @route   POST /api/posts
 // @access  Private
 
+// createPost.js
 const createPost = asyncHandler(async (req, res) => {
   const { title, content, image } = req.body;
 
@@ -28,6 +29,8 @@ const createPost = asyncHandler(async (req, res) => {
   // If an image file is provided, upload it to Cloudinary
   else if (req.file) {
     const result = await cloudinary.uploader.upload(req.file.path);
+    // Clean up: remove file from local storage after upload to cloudinary
+    fs.unlinkSync(req.file.path);
     imageUrl = result.secure_url;
   }
 
